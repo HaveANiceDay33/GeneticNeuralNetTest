@@ -68,7 +68,7 @@ public class Game {
 		 * Draw all players
 		 */
 		for(Player p : GeneticsHandler.population) {
-			p.draw(delta);
+			p.update(delta);
 			if(p.updateCollisions() == true) {
 				p.die();
 				numAlive--;
@@ -93,7 +93,7 @@ public class Game {
 		
 		//More drawing
 		Collections.sort(GeneticsHandler.population, GeneticsHandler.compareByScore.reversed());
-		GeneticsHandler.population.get(0).drawNetwork(delta);
+		GeneticsHandler.population.get(0).draw(delta);
 		Main.font.drawWord("Generation :  "+GeneticsHandler.currentGeneration, Display.getWidth()-300, 20, Color.white, 0.3f);
 		Main.font.drawWord("Players Alive :  "+numAlive, Display.getWidth()-300, 60, Color.white, 0.3f);
 		

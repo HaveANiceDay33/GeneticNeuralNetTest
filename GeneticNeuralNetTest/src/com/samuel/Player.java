@@ -112,14 +112,15 @@ public class Player implements Cloneable{
 			float distanceBetween;
 			if(Game.obstacles.size() > 1 && Game.obstacles.get(0).xPos > -Obstacle.OB_W) {
 				distanceBetween = Game.obstacles.get(1).xPos - o.xPos;
+				decisionNet.layers.get(0).nodes.get(2).value = HvlMath.map(distanceBetween, Game.gameSpeed * Game.minFrequency, Game.gameSpeed * Game.maxFrequency, 0, 1);
 			} else {
-				distanceBetween = 0;
+				distanceBetween = 1;
+				decisionNet.layers.get(0).nodes.get(2).value = 1;
 			}
 			
 			decisionNet.layers.get(0).nodes.get(0).value = HvlMath.map(distance, 0, Display.getWidth() - xPos, 0, 1);
 			decisionNet.layers.get(0).nodes.get(1).value = HvlMath.map(closestObstacle().height, 60, 120, 0, 1);
-			decisionNet.layers.get(0).nodes.get(2).value = HvlMath.map(distanceBetween, Game.gameSpeed * Game.minFrequency, Game.gameSpeed * Game.maxFrequency, 0, 1);
-			
+		
 			NetworkMain.propogateAsNetwork(decisionNet);
 			if(decisionNet.lastLayer().nodes.get(0).value > 0.75) {
 				jump();
@@ -127,11 +128,12 @@ public class Player implements Cloneable{
 		}
 	}
 	
-	public void drawNetwork(float delta) {
+	public void draw(float delta) {
+		hvlDrawQuadc(xPos, drawPos, PLAYER_SIZE, PLAYER_SIZE, thisColor);
 		decisionNet.draw(delta, Main.font, Main.getTexture(Main.CIRCLE_INDEX));
 	}
 	
-	public void draw(float delta) {
+	public void update(float delta) {
 		if(!dead) {
 			updateNetwork();
 			
@@ -143,7 +145,7 @@ public class Player implements Cloneable{
 				yPos = 0;
 				yVel = 0;
 			}
-			hvlDrawQuadc(xPos, drawPos, PLAYER_SIZE, PLAYER_SIZE, thisColor);
+			
 			score+=delta;
 		}
 	}

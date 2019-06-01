@@ -8,7 +8,7 @@ import org.newdawn.slick.Color;
 import com.osreboot.ridhvl.HvlMath;
 
 public class GeneticsHandler {
-	public static final int MAX_POP = 10000;
+	public static final int MAX_POP = 50000;
 	
 	public static int currentGeneration = 1;
 	public static ArrayList<Player> population;
@@ -65,18 +65,20 @@ public class GeneticsHandler {
 		}
 		Player child = new Player(childColor);
 		
+		float geneticBias = (c1.score - c2.score)/c1.score;
+	
 		for(int l = 0; l < child.decisionNet.layers.size(); l++) {
 			for(int n = 0; n < child.decisionNet.layers.get(l).numNodes; n++) {
 				for(int i = 0; i < child.decisionNet.layers.get(l).nodes.get(n).connectionWeights.size(); i++) {
 					double rand = Math.random();
-					if(rand < 0.5) {
+					if(rand < 0.5 + geneticBias) {
 						child.decisionNet.layers.get(l).nodes.get(n).connectionWeights.put(i, c1.decisionNet.layers.get(l).nodes.get(n).connectionWeights.get(i));
 					} else {
 						child.decisionNet.layers.get(l).nodes.get(n).connectionWeights.put(i, c2.decisionNet.layers.get(l).nodes.get(n).connectionWeights.get(i));
 					}
 				}
 				double biasRand = Math.random();
-				if(biasRand < 0.5) {
+				if(biasRand < 0.5 + geneticBias) {
 					child.decisionNet.layers.get(l).nodes.get(n).bias = c1.decisionNet.layers.get(l).nodes.get(n).bias;
 				} else {
 					child.decisionNet.layers.get(l).nodes.get(n).bias = c2.decisionNet.layers.get(l).nodes.get(n).bias;
@@ -91,12 +93,12 @@ public class GeneticsHandler {
 			for(int n = 0; n < p.decisionNet.layers.get(l).numNodes; n++) {
 				for(int i = 0; i < p.decisionNet.layers.get(l).nodes.get(n).connectionWeights.size(); i++) {
 					double rand = Math.random();
-					if(rand < 0.1) {
+					if(rand < 0.01) {
 						p.decisionNet.layers.get(l).nodes.get(n).connectionWeights.put(i, (float) Math.random());
 					}
 				}
 				double biasRand = Math.random();
-				if(biasRand < 0.1) {
+				if(biasRand < 0.05) {
 					p.decisionNet.layers.get(l).nodes.get(n).bias = (float) Math.random();
 				}
 			}
